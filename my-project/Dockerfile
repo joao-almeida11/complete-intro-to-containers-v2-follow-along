@@ -4,6 +4,8 @@ RUN useradd -ms /bin/bash lolcat
 
 USER lolcat
 
-COPY index.js /home/lolcat/code/index.js
+WORKDIR /home/lolcat/code
 
-CMD ["node", "/home/lolcat/code/index.js" ]
+COPY --chown=lolcat index.js .
+
+CMD ["node", "index.js" ]
