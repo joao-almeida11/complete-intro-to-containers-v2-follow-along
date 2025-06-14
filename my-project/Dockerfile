@@ -1,11 +1,11 @@
 FROM node:20
 
-RUN useradd -ms /bin/bash lolcat
+USER node
 
-USER lolcat
+WORKDIR /home/node/code
 
-WORKDIR /home/lolcat/code
+COPY --chown=node . .
 
-COPY --chown=lolcat index.js .
+RUN npm ci
 
 CMD ["node", "index.js" ]
