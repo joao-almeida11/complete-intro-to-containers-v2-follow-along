@@ -1,0 +1,33 @@
+services:
+    api:
+        build: api
+        ports:
+            - '8080:8080'
+        links:
+            - db
+        depends_on: # to better kompose results
+            - db
+        environment:
+            MONGO_CONNECTION_STRING: mongodb://db:27017
+        labels:
+            kompose.service.type: nodeport # so kompose automatically adds some load balancing internally
+            kompose.image-pull-policy: Never # this is not published so don't try to pull image
+    db:
+        image: mongo:7
+        ports:
+            - '27017:27017'
+    web:
+        build: web
+        # there is no link to the API because all traffic between web and api is through the browser; there is no direct traffic between the two
+        links:
+            - api
+        depends_on:
+            - api
+        labels:
+            kompose.service.type: LoadBalancer # when deploying allows the cloud provider to handle it through its service of load balancing (like Azure Front Door)
+            kompose.service.expose: true
+            kompose.image-pull-policy: Never
+        environment:
+            API_URL: http://api:8080
+        ports:
+            - '8081:80'
