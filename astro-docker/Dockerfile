@@ -16,6 +16,10 @@ COPY --chown=node:node . .
 RUN npm run build
 
 # # production step
-FROM nginx:1.27.5
+FROM nginx:alpine
 COPY ./nginx/nginx.conf /etc/nginx/nginx.conf
 COPY --from=node-builder /build/dist /usr/share/nginx/html
+
+# commands to run this
+# docker build --tag astro-docker .
+# docker run -it -p 8080:8080 --name my-astro-docker astro-docker
